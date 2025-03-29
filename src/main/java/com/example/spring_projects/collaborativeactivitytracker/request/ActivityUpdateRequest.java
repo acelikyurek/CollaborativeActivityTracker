@@ -1,6 +1,5 @@
 package com.example.spring_projects.collaborativeactivitytracker.request;
 
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)

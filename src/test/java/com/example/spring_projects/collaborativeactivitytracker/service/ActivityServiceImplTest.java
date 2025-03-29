@@ -99,7 +99,7 @@ public class ActivityServiceImplTest {
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
         final Date currentDate = new Date();
-        final Date futureDate = new Date(currentDate.getTime() + 8640000L);;
+        final Date futureDate = new Date(currentDate.getTime() + 8640000L);
         final Integer currentParticipants = 1;
         final Integer maximumParticipants = 5;
         final Boolean isCompleted = false;
@@ -122,11 +122,10 @@ public class ActivityServiceImplTest {
 
     @Test
     void testGetActivityList() {
-        final Long activityId = 1L;
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
         final Date currentDate = new Date();
-        final Date futureDate = new Date(currentDate.getTime() + 8640000L);;
+        final Date futureDate = new Date(currentDate.getTime() + 8640000L);
         final Integer currentParticipants = 1;
         final Integer maximumParticipants = 5;
         final Boolean isCompleted = false;
@@ -145,7 +144,7 @@ public class ActivityServiceImplTest {
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
         final Date currentDate = new Date();
-        final Date futureDate = new Date(currentDate.getTime() + 8640000L);;
+        final Date futureDate = new Date(currentDate.getTime() + 8640000L);
         final Integer currentParticipants = 1;
         final Integer maximumParticipants = 5;
         final Boolean isCompleted = false;
@@ -188,7 +187,7 @@ public class ActivityServiceImplTest {
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
         final Date currentDate = new Date();
-        final Date futureDate = new Date(currentDate.getTime() + 8640000L);;
+        final Date futureDate = new Date(currentDate.getTime() + 8640000L);
         final Integer currentParticipants = 1;
         final Integer maximumParticipants = 5;
         final Boolean isCompleted = false;

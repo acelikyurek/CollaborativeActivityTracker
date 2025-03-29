@@ -5,8 +5,8 @@ import com.example.spring_projects.collaborativeactivitytracker.response.*;
 
 public interface ActivityService {
     GenericResponse createActivity(ActivityCreateRequest activityCreateRequest);
-    ActivityReadResponse getActivity(ActivityGenericRequest activityGenericRequest);
+    ActivityReadResponse getActivity(Long activityId);
     ActivityReadListResponse getActivityList();
-    GenericResponse updateActivity(ActivityUpdateRequest activityUpdateRequest);
-    GenericResponse deleteActivity(ActivityGenericRequest activityGenericRequest);
+    GenericResponse updateActivity(Long activityId, ActivityUpdateRequest activityUpdateRequest);
+    GenericResponse deleteActivity(Long activityId);
 }

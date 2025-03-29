@@ -3,7 +3,6 @@ package com.example.spring_projects.collaborativeactivitytracker.service;
 import com.example.spring_projects.collaborativeactivitytracker.model.Activity;
 import com.example.spring_projects.collaborativeactivitytracker.repository.ActivityRepository;
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityCreateRequest;
-import com.example.spring_projects.collaborativeactivitytracker.request.ActivityGenericRequest;
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityUpdateRequest;
 import com.example.spring_projects.collaborativeactivitytracker.response.ActivityReadListResponse;
 import com.example.spring_projects.collaborativeactivitytracker.response.ActivityReadResponse;
@@ -16,9 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -37,7 +38,7 @@ public class ActivityServiceImplTest {
     void testCreateActivity_Success() {
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
-        final String activityDate = "10.10.2024";
+        final String activityDate = LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         final Integer maximumParticipants = 5;
         ActivityCreateRequest activityCreateRequest = new ActivityCreateRequest(activityTitle, activityDescription, activityDate, maximumParticipants);
         GenericResponse genericResponse = activityServiceImpl.createActivity(activityCreateRequest);
@@ -72,7 +73,7 @@ public class ActivityServiceImplTest {
     void testCreateActivity_DateInPast() {
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
-        final String activityDate = "01.01.2020";
+        final String activityDate = LocalDate.now().minusYears(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         final Integer maximumParticipants = 5;
         ActivityCreateRequest activityCreateRequest = new ActivityCreateRequest(activityTitle, activityDescription, activityDate, maximumParticipants);
         GenericResponse genericResponse = activityServiceImpl.createActivity(activityCreateRequest);
@@ -84,7 +85,7 @@ public class ActivityServiceImplTest {
     void testCreateActivity_TooFewParticipants() {
         final String activityTitle = "Activity Title";
         final String activityDescription = "Activity Description";
-        final String activityDate = "10.10.2024";
+        final String activityDate = LocalDate.now().plusYears(1).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         final Integer maximumParticipants = 1;
         ActivityCreateRequest activityCreateRequest = new ActivityCreateRequest(activityTitle, activityDescription, activityDate, maximumParticipants);
         GenericResponse genericResponse = activityServiceImpl.createActivity(activityCreateRequest);
@@ -104,7 +105,7 @@ public class ActivityServiceImplTest {
         final Boolean isCompleted = false;
         Activity activity = new Activity(activityTitle, activityDescription, currentDate, currentDate, futureDate, currentParticipants, maximumParticipants, isCompleted);
         when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
-        ActivityReadResponse response = activityServiceImpl.getActivity(new ActivityGenericRequest(activityId));
+        ActivityReadResponse response = activityServiceImpl.getActivity(activityId);
         assertTrue(response.getOperationSuccessful());
         assertEquals("Operation successful!", response.getMessage());
         assertEquals(activity, response.getActivity());
@@ -114,7 +115,7 @@ public class ActivityServiceImplTest {
     void testGetActivity_NotFound() {
         final Long activityId = 1L;
         when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
-        ActivityReadResponse response = activityServiceImpl.getActivity(new ActivityGenericRequest(activityId));
+        ActivityReadResponse response = activityServiceImpl.getActivity(activityId);
         assertFalse(response.getOperationSuccessful());
         assertEquals("Activity not found!", response.getMessage());
     }
@@ -152,8 +153,8 @@ public class ActivityServiceImplTest {
         final String newActivityDescription = "New Activity Description";
         Activity activity = new Activity(activityTitle, activityDescription, currentDate, currentDate, futureDate, currentParticipants, maximumParticipants, isCompleted);
         when(activityRepository.getActivityByActivityId(activityId)).thenReturn(Optional.of(activity));
-        ActivityUpdateRequest request = new ActivityUpdateRequest(activityId, newActivityTitle, newActivityDescription, null, null, null, null);
-        GenericResponse response = activityServiceImpl.updateActivity(request);
+        ActivityUpdateRequest request = new ActivityUpdateRequest(newActivityTitle, newActivityDescription, null, null, null, null);
+        GenericResponse response = activityServiceImpl.updateActivity(activityId, request);
         assertTrue(response.getOperationSuccessful());
         assertEquals("Operation successful!", response.getMessage());
         assertEquals(newActivityTitle, activity.getActivityTitle());
@@ -166,8 +167,8 @@ public class ActivityServiceImplTest {
         final String newActivityTitle = "New Activity Title";
         final String newActivityDescription = "New Activity Description";
         when(activityRepository.getActivityByActivityId(activityId)).thenReturn(Optional.empty());
-        ActivityUpdateRequest request = new ActivityUpdateRequest(1L, newActivityTitle, newActivityDescription, null, null, null, null);
-        GenericResponse response = activityServiceImpl.updateActivity(request);
+        ActivityUpdateRequest request = new ActivityUpdateRequest(newActivityTitle, newActivityDescription, null, null, null, null);
+        GenericResponse response = activityServiceImpl.updateActivity(activityId, request);
         assertFalse(response.getOperationSuccessful());
         assertEquals("Activity not found!", response.getMessage());
     }
@@ -175,8 +176,8 @@ public class ActivityServiceImplTest {
     @Test
     void testUpdateActivity_NoUpdatesRequested() {
         final Long activityId = 1L;
-        ActivityUpdateRequest request = new ActivityUpdateRequest(activityId, null, null, null, null, null, null);
-        GenericResponse response = activityServiceImpl.updateActivity(request);
+        ActivityUpdateRequest request = new ActivityUpdateRequest(null, null, null, null, null, null);
+        GenericResponse response = activityServiceImpl.updateActivity(activityId, request);
         assertFalse(response.getOperationSuccessful());
         assertEquals("No update is requested!", response.getMessage());
     }
@@ -193,7 +194,7 @@ public class ActivityServiceImplTest {
         final Boolean isCompleted = false;
         Activity activity = new Activity(activityTitle, activityDescription, currentDate, currentDate, futureDate, currentParticipants, maximumParticipants, isCompleted);
         when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
-        GenericResponse response = activityServiceImpl.deleteActivity(new ActivityGenericRequest(activityId));
+        GenericResponse response = activityServiceImpl.deleteActivity(activityId);
         assertTrue(response.getOperationSuccessful());
         assertEquals("Operation successful!", response.getMessage());
         verify(activityRepository).delete(activity);
@@ -203,9 +204,8 @@ public class ActivityServiceImplTest {
     void testDeleteActivity_NotFound() {
         final Long activityId = 1L;
         when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
-        GenericResponse response = activityServiceImpl.deleteActivity(new ActivityGenericRequest(activityId));
+        GenericResponse response = activityServiceImpl.deleteActivity(activityId);
         assertFalse(response.getOperationSuccessful());
         assertEquals("Activity not found!", response.getMessage());
     }
-
 }

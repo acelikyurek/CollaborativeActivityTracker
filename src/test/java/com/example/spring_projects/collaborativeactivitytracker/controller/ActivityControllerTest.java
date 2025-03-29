@@ -1,7 +1,6 @@
 package com.example.spring_projects.collaborativeactivitytracker.controller;
 
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityCreateRequest;
-import com.example.spring_projects.collaborativeactivitytracker.request.ActivityGenericRequest;
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityUpdateRequest;
 import com.example.spring_projects.collaborativeactivitytracker.response.ActivityReadListResponse;
 import com.example.spring_projects.collaborativeactivitytracker.response.ActivityReadResponse;
@@ -48,20 +47,20 @@ class ActivityControllerTest {
 
     @Test
     void testGetActivity_Success() {
-        ActivityGenericRequest activityGenericRequest = new ActivityGenericRequest(1L);
+        Long activityId = 1L;
         ActivityReadResponse activityReadResponse = ActivityReadResponse.builder().operationSuccessful(true).message("Activity retrieved successfully!").activity(null).build();
-        when(activityServiceImpl.getActivity(any(ActivityGenericRequest.class))).thenReturn(activityReadResponse);
-        ResponseEntity<ActivityReadResponse> response = activityController.getActivity(activityGenericRequest);
+        when(activityServiceImpl.getActivity(any(Long.class))).thenReturn(activityReadResponse);
+        ResponseEntity<ActivityReadResponse> response = activityController.getActivity(activityId);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(activityReadResponse, response.getBody());
     }
 
     @Test
     void testGetActivity_Failure() {
-        ActivityGenericRequest activityGenericRequest = new ActivityGenericRequest(1L);
+        Long activityId = 1L;
         ActivityReadResponse activityReadResponse = ActivityReadResponse.builder().operationSuccessful(false).message("Activity not found!").activity(null).build();
-        when(activityServiceImpl.getActivity(any(ActivityGenericRequest.class))).thenReturn(activityReadResponse);
-        ResponseEntity<ActivityReadResponse> response = activityController.getActivity(activityGenericRequest);
+        when(activityServiceImpl.getActivity(any(Long.class))).thenReturn(activityReadResponse);
+        ResponseEntity<ActivityReadResponse> response = activityController.getActivity(activityId);
         assertEquals(400, response.getStatusCode().value());
         assertEquals(activityReadResponse, response.getBody());
     }
@@ -86,40 +85,42 @@ class ActivityControllerTest {
 
     @Test
     void testUpdateActivity_Success() {
-        ActivityUpdateRequest activityUpdateRequest = new ActivityUpdateRequest(1L, null, "Updated Description", null, null, null, null);
+        Long activityId = 1L;
+        ActivityUpdateRequest activityUpdateRequest = new ActivityUpdateRequest(null, "Updated Description", null, null, null, null);
         GenericResponse genericResponse = GenericResponse.builder().operationSuccessful(true).message("Activity updated successfully!").build();
-        when(activityServiceImpl.updateActivity(any(ActivityUpdateRequest.class))).thenReturn(genericResponse);
-        ResponseEntity<GenericResponse> response = activityController.updateActivity(activityUpdateRequest);
+        when(activityServiceImpl.updateActivity(any(Long.class), any(ActivityUpdateRequest.class))).thenReturn(genericResponse);
+        ResponseEntity<GenericResponse> response = activityController.updateActivity(activityId, activityUpdateRequest);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(genericResponse, response.getBody());
     }
 
     @Test
     void testUpdateActivity_Failure() {
-        ActivityUpdateRequest activityUpdateRequest = new ActivityUpdateRequest(1L, null, "Updated Description", null, null, null, null);
+        Long activityId = 1L;
+        ActivityUpdateRequest activityUpdateRequest = new ActivityUpdateRequest(null, "Updated Description", null, null, null, null);
         GenericResponse genericResponse = GenericResponse.builder().operationSuccessful(false).message("Activity update failed!").build();
-        when(activityServiceImpl.updateActivity(any(ActivityUpdateRequest.class))).thenReturn(genericResponse);
-        ResponseEntity<GenericResponse> response = activityController.updateActivity(activityUpdateRequest);
+        when(activityServiceImpl.updateActivity(any(Long.class), any(ActivityUpdateRequest.class))).thenReturn(genericResponse);
+        ResponseEntity<GenericResponse> response = activityController.updateActivity(activityId, activityUpdateRequest);
         assertEquals(400, response.getStatusCode().value());
         assertEquals(genericResponse, response.getBody());
     }
 
     @Test
     void testDeleteActivity_Success() {
-        ActivityGenericRequest activityGenericRequest = new ActivityGenericRequest(1L);
+        Long activityId = 1L;
         GenericResponse genericResponse = GenericResponse.builder().operationSuccessful(true).message("Activity deleted successfully!").build();
-        when(activityServiceImpl.deleteActivity(any(ActivityGenericRequest.class))).thenReturn(genericResponse);
-        ResponseEntity<GenericResponse> response = activityController.deleteActivity(activityGenericRequest);
+        when(activityServiceImpl.deleteActivity(any(Long.class))).thenReturn(genericResponse);
+        ResponseEntity<GenericResponse> response = activityController.deleteActivity(activityId);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(genericResponse, response.getBody());
     }
 
     @Test
     void testDeleteActivity_Failure() {
-        ActivityGenericRequest activityGenericRequest = new ActivityGenericRequest(1L);
+        Long activityId = 1L;
         GenericResponse genericResponse = GenericResponse.builder().operationSuccessful(false).message("Activity deletion failed!").build();
-        when(activityServiceImpl.deleteActivity(any(ActivityGenericRequest.class))).thenReturn(genericResponse);
-        ResponseEntity<GenericResponse> response = activityController.deleteActivity(activityGenericRequest);
+        when(activityServiceImpl.deleteActivity(any(Long.class))).thenReturn(genericResponse);
+        ResponseEntity<GenericResponse> response = activityController.deleteActivity(activityId);
         assertEquals(400, response.getStatusCode().value());
         assertEquals(genericResponse, response.getBody());
     }

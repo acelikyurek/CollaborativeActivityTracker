@@ -9,13 +9,15 @@ import lombok.*;
 @NoArgsConstructor
 public class ActivityUpdateRequest extends GenericRequest {
 
-    @NotNull
-    @NotBlank
-    public Long activityId;
     public String activityTitle;
+
     public String activityDescription;
+
     public String plannedAt; // DD.MM.YYYY
+
     public Integer currentParticipants;
+
     public Integer maximumParticipants;
+
     public Boolean isCompleted;
 }

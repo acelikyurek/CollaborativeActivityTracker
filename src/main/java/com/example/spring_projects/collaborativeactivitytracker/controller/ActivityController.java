@@ -1,7 +1,6 @@
 package com.example.spring_projects.collaborativeactivitytracker.controller;
 
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityCreateRequest;
-import com.example.spring_projects.collaborativeactivitytracker.request.ActivityGenericRequest;
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityUpdateRequest;
 import com.example.spring_projects.collaborativeactivitytracker.response.ActivityReadListResponse;
 import com.example.spring_projects.collaborativeactivitytracker.response.ActivityReadResponse;
@@ -10,10 +9,7 @@ import com.example.spring_projects.collaborativeactivitytracker.service.Activity
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The controller for managing activities.
@@ -21,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping("/activity")
+@RequestMapping("/api")
 public class ActivityController {
 
     private final ActivityServiceImpl activityServiceImpl;
@@ -32,7 +28,7 @@ public class ActivityController {
      * @param activityCreateRequest the request containing activity creation details
      * @return a response entity with the result of the operation
      */
-    @PostMapping("/createActivity")
+    @PostMapping("/activity")
     public ResponseEntity<GenericResponse> createActivity(ActivityCreateRequest activityCreateRequest) {
         GenericResponse genericResponse = activityServiceImpl.createActivity(activityCreateRequest);
         if (genericResponse.getOperationSuccessful()) {
@@ -44,12 +40,12 @@ public class ActivityController {
     /**
      * Endpoint for retrieving a specific activity by ID.
      *
-     * @param activityGenericRequest the request containing the activity ID
+     * @param activityId the request containing the activity ID
      * @return a response entity with the activity details
      */
-    @PostMapping("/getActivity")
-    public ResponseEntity<ActivityReadResponse> getActivity(@RequestBody ActivityGenericRequest activityGenericRequest) {
-        ActivityReadResponse activityReadResponse = activityServiceImpl.getActivity(activityGenericRequest);
+    @GetMapping("/activity/{activityId}")
+    public ResponseEntity<ActivityReadResponse> getActivity(@PathVariable Long activityId) {
+        ActivityReadResponse activityReadResponse = activityServiceImpl.getActivity(activityId);
         if (activityReadResponse.getOperationSuccessful()) {
             return ResponseEntity.ok().body(activityReadResponse);
         }
@@ -61,7 +57,7 @@ public class ActivityController {
      *
      * @return a response entity with the list of activities
      */
-    @PostMapping("/getActivityAll")
+    @GetMapping("/activity")
     public ResponseEntity<ActivityReadListResponse> getActivityAll() {
         ActivityReadListResponse activityReadListResponse = activityServiceImpl.getActivityList();
         if (activityReadListResponse.getOperationSuccessful()) {
@@ -73,12 +69,13 @@ public class ActivityController {
     /**
      * Endpoint for updating an existing activity.
      *
+     * @param activityId the request containing the activity ID
      * @param activityUpdateRequest the request containing updated activity details
      * @return a response entity with the result of the operation
      */
-    @PostMapping("/updateActivity")
-    public ResponseEntity<GenericResponse> updateActivity(ActivityUpdateRequest activityUpdateRequest) {
-        GenericResponse genericResponse = activityServiceImpl.updateActivity(activityUpdateRequest);
+    @PutMapping("/activity/{activityId}")
+    public ResponseEntity<GenericResponse> updateActivity(@PathVariable Long activityId, @RequestBody ActivityUpdateRequest activityUpdateRequest) {
+        GenericResponse genericResponse = activityServiceImpl.updateActivity(activityId, activityUpdateRequest);
         if (genericResponse.getOperationSuccessful()) {
             return ResponseEntity.ok().body(genericResponse);
         }
@@ -88,12 +85,12 @@ public class ActivityController {
     /**
      * Endpoint for deleting an activity by ID.
      *
-     * @param activityGenericRequest the request containing the activity ID
+     * @param activityId the request containing the activity ID
      * @return a response entity with the result of the deletion operation
      */
-    @PostMapping("/deleteActivity")
-    public ResponseEntity<GenericResponse> deleteActivity(@RequestBody ActivityGenericRequest activityGenericRequest) {
-        GenericResponse genericResponse = activityServiceImpl.deleteActivity(activityGenericRequest);
+    @DeleteMapping("/activity/{activityId}")
+    public ResponseEntity<GenericResponse> deleteActivity(@PathVariable Long activityId) {
+        GenericResponse genericResponse = activityServiceImpl.deleteActivity(activityId);
         if (genericResponse.getOperationSuccessful()) {
             return ResponseEntity.ok().body(genericResponse);
         }

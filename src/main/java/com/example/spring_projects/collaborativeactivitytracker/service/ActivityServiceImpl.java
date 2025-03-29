@@ -3,7 +3,6 @@ package com.example.spring_projects.collaborativeactivitytracker.service;
 import com.example.spring_projects.collaborativeactivitytracker.model.*;
 import com.example.spring_projects.collaborativeactivitytracker.repository.ActivityRepository;
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityCreateRequest;
-import com.example.spring_projects.collaborativeactivitytracker.request.ActivityGenericRequest;
 import com.example.spring_projects.collaborativeactivitytracker.request.ActivityUpdateRequest;
 import com.example.spring_projects.collaborativeactivitytracker.response.*;
 import lombok.RequiredArgsConstructor;
@@ -61,11 +60,11 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Retrieves the details of an activity based on the activity ID.
      *
-     * @param activityGenericRequest the request containing the activity ID
+     * @param activityId the request containing the activity ID
      * @return a response containing the activity details if found
      */
-    public ActivityReadResponse getActivity(ActivityGenericRequest activityGenericRequest) {
-        Optional<Activity> activityOptional = activityRepository.findById(activityGenericRequest.getActivityId());
+    public ActivityReadResponse getActivity(Long activityId) {
+        Optional<Activity> activityOptional = activityRepository.findById(activityId);
         if (activityOptional.isEmpty()) {
             return ActivityReadResponse.builder().operationSuccessful(false).message("Activity not found!").build();
         }
@@ -85,14 +84,15 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Updates an existing activity based on the request details.
      *
+     * @param activityId the request containing the activity ID
      * @param activityUpdateRequest the request containing updated activity details
      * @return a response indicating whether the operation was successful or not
      */
-    public GenericResponse updateActivity(ActivityUpdateRequest activityUpdateRequest) {
+    public GenericResponse updateActivity(Long activityId, ActivityUpdateRequest activityUpdateRequest) {
         if (activityUpdateRequest.getActivityTitle() == null && activityUpdateRequest.getActivityDescription() == null && activityUpdateRequest.getPlannedAt() == null && activityUpdateRequest.getCurrentParticipants() == null && activityUpdateRequest.getMaximumParticipants() == null && activityUpdateRequest.getIsCompleted() == null) {
             return GenericResponse.builder().operationSuccessful(false).message("No update is requested!").build();
         }
-        Optional<Activity> activityOptional = activityRepository.getActivityByActivityId(activityUpdateRequest.getActivityId());
+        Optional<Activity> activityOptional = activityRepository.getActivityByActivityId(activityId);
         if (activityOptional.isEmpty()) {
             return GenericResponse.builder().operationSuccessful(false).message("Activity not found!").build();
         }
@@ -151,11 +151,11 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Deletes an activity based on the activity ID.
      *
-     * @param activityGenericRequest the request containing the activity ID
+     * @param activityId the request containing the activity ID
      * @return a response indicating whether the operation was successful or not
      */
-    public GenericResponse deleteActivity(ActivityGenericRequest activityGenericRequest) {
-        Optional<Activity> activityOptional = activityRepository.findById(activityGenericRequest.getActivityId());
+    public GenericResponse deleteActivity(Long activityId) {
+        Optional<Activity> activityOptional = activityRepository.findById(activityId);
         if (activityOptional.isEmpty()) {
             return ActivityReadResponse.builder().operationSuccessful(false).message("Activity not found!").build();
         }

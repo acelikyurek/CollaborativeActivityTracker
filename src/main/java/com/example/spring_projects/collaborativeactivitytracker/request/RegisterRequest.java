@@ -8,6 +8,7 @@ import jakarta.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest extends GenericRequest {
+
     @NotNull
     @NotBlank
     @Email
